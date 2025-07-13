@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/database");
 const { auth, checkRole } = require("../middlewares/auth");
+const Store = require("../models/store");
 
 // Only admin can access these stats
 router.get(
@@ -37,7 +38,8 @@ router.get(
     if (name) {
       query += ` AND (first_name ILIKE $${
         params.length + 1
-      } OR last_name ILIKE $${params.length + 1})`;
+      } OR last_name ILIKE $${params.length + 2})`;
+      params.push(`%${name}%`);
       params.push(`%${name}%`);
     }
     if (email) {
@@ -65,25 +67,29 @@ router.get(
   checkRole(["system_administrator"]),
   async (req, res) => {
     const userId = req.params.id;
-    const result = await db.query(
-      "SELECT id, first_name, last_name, email, address, role FROM users WHERE id = $1",
-      [userId]
-    );
-    const user = result.rows[0];
-
-    // If user is a store owner, fetch their store's average rating
-    if (user && user.role === "store_owner") {
-      const ratingResult = await db.query(
-        `SELECT COALESCE(AVG(r.rating), 0) AS average_rating
-         FROM stores s
-         LEFT JOIN ratings r ON s.id = r.store_id
-         WHERE s.owner_id = $1`,
+    try {
+      const result = await db.query(
+        "SELECT id, first_name, last_name, email, address, role FROM users WHERE id = $1",
         [userId]
       );
-      user.average_rating = ratingResult.rows[0].average_rating;
-    }
+      const user = result.rows[0];
 
-    res.json(user);
+      // If user is a store owner, fetch their store's average rating
+      if (user && user.role === "store_owner") {
+        const ratingResult = await db.query(
+          `SELECT COALESCE(AVG(r.rating), 0) AS average_rating
+           FROM stores s
+           LEFT JOIN ratings r ON s.id = r.store_id
+           WHERE s.owner_id = $1`,
+          [userId]
+        );
+        user.average_rating = ratingResult.rows[0].average_rating;
+      }
+
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user details" });
+    }
   }
 );
 
@@ -109,5 +115,15 @@ router.post(
     }
   }
 );
+
+// GET /api/admin/stores - Get all stores for admin
+router.get("/stores", async (req, res) => {
+  try {
+    const stores = await Store.findAll(); // Adjust based on your ORM/query
+    res.json(stores);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch stores" });
+  }
+});
 
 module.exports = router;

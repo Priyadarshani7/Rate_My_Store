@@ -8,7 +8,8 @@ export default function Signup() {
     password: "",
     firstName: "",
     lastName: "",
-    address: "", // Added address field to formData
+    address: "",
+    role: "", // No default, force user to choose
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submitting signup with role:", formData.role); // Debug log
     try {
       await signup(formData);
       navigate("/login");
@@ -123,6 +125,25 @@ export default function Signup() {
                 value={formData.address}
                 onChange={handleChange}
               />
+            </div>
+            <div>
+              <label htmlFor="role" className="sr-only">
+                Role
+              </label>
+              <select
+                id="role"
+                name="role"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                value={formData.role}
+                onChange={handleChange}
+              >
+                <option value="" disabled>
+                  Select Role
+                </option>
+                <option value="normal_user">Normal User</option>
+                <option value="store_owner">Store Owner</option>
+              </select>
             </div>
           </div>
 

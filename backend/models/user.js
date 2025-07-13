@@ -11,6 +11,7 @@ class User {
     lastName,
     address,
   }) {
+    console.log("Creating user with role:", role); // Debug log
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await db.query(
@@ -51,6 +52,7 @@ class User {
         role: user.role,
         firstName: user.first_name,
         lastName: user.last_name,
+        address: user.address, // Add address field
       },
     };
   }

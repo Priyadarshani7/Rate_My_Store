@@ -3,10 +3,10 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function StoreList() {
-  const { token, logout } = useAuth();
-  const navigate = useNavigate();
+  const { token } = useAuth();
   const [stores, setStores] = useState([]);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchStores() {
@@ -30,6 +30,12 @@ export default function StoreList() {
     <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Stores List</h2>
       {error && <div className="text-red-600">{error}</div>}
+      <button
+        className="bg-blue-600 text-white px-4 py-2 rounded mb-4"
+        onClick={() => navigate("/admin/stores")}
+      >
+        View Store List
+      </button>
       <ul>
         {stores.map((store) => (
           <li key={store.id} className="mb-4 border-b pb-2">
@@ -40,15 +46,6 @@ export default function StoreList() {
           </li>
         ))}
       </ul>
-      <button
-        onClick={() => {
-          logout();
-          navigate("/login");
-        }}
-        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
-      >
-        Logout
-      </button>
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function UpdatePassword() {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
+  const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");
@@ -62,6 +64,15 @@ export default function UpdatePassword() {
         {error && <div className="text-red-600">{error}</div>}
         {success && <div className="text-green-600">{success}</div>}
       </form>
+      <button
+        onClick={() => {
+          logout();
+          navigate("/login");
+        }}
+        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
+      >
+        Logout
+      </button>
     </div>
   );
 }

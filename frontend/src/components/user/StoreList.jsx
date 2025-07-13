@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function StoreList() {
-  const { token, user } = useAuth();
+  const { token, user, logout } = useAuth();
+  const navigate = useNavigate();
   const [stores, setStores] = useState([]);
   const [error, setError] = useState("");
   const [filters, setFilters] = useState({ name: "", address: "" });
@@ -78,7 +80,18 @@ export default function StoreList() {
 
   return (
     <div className="max-w-3xl mx-auto mt-8 p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Stores List</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Stores List</h2>
+        <button
+          onClick={() => {
+            logout();
+            navigate("/login");
+          }}
+          className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
+        >
+          Logout
+        </button>
+      </div>
       <div className="mb-4 flex gap-2 flex-wrap">
         <input
           name="name"

@@ -6,13 +6,19 @@ const { auth, checkRole } = require("../middlewares/auth");
 // Register new user
 router.post("/register", async (req, res) => {
   try {
-    const { firstName, lastName, email, password, address } = req.body;
+    const { firstName, lastName, email, password, address, role } = req.body;
+    // Accept only valid roles, otherwise error
+    const validRoles = ["normal_user", "store_owner"];
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({ error: "Invalid role selected" });
+    }
     const user = await User.create({
       firstName,
       lastName,
       email,
       password,
       address,
+      role,
     });
     res.status(201).json({
       message: "Registration successful",
@@ -22,6 +28,7 @@ router.post("/register", async (req, res) => {
         address: user.address,
         firstName: user.first_name,
         lastName: user.last_name,
+        role: user.role,
         // ...other fields
       },
     });

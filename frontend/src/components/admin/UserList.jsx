@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function UserList() {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
   const [filters, setFilters] = useState({
@@ -26,11 +27,16 @@ export default function UserList() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        if (!response.ok) throw new Error("Failed to fetch users");
+        if (!response.ok) {
+          const errMsg = await response.text();
+          setError(`Error loading users: ${response.status} ${errMsg}`);
+          setUsers([]);
+          return;
+        }
         const data = await response.json();
         setUsers(data);
       } catch (err) {
-        setError("Error loading users");
+        setError("Error loading users: " + err.message);
       }
     }
     fetchUsers();
@@ -115,6 +121,15 @@ export default function UserList() {
       >
         Add User
       </Link>
+      <button
+        onClick={() => {
+          logout();
+          navigate("/login");
+        }}
+        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
+      >
+        Logout
+      </button>
     </div>
   );
 }

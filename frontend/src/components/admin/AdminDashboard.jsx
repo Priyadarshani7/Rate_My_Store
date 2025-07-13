@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function AdminDashboard() {
   const { user, token, logout } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [error, setError] = useState("");
 
@@ -36,7 +37,10 @@ export default function AdminDashboard() {
                 Welcome, {user && user.firstName ? user.firstName : "User"}
               </span>
               <button
-                onClick={logout}
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
                 className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
               >
                 Logout
@@ -61,6 +65,20 @@ export default function AdminDashboard() {
                 <li>Total Ratings: {stats.totalRatings}</li>
               </ul>
             )}
+            <div className="flex gap-4 mb-6">
+              <button
+                className="bg-green-600 text-white px-4 py-2 rounded"
+                onClick={() => navigate("/admin/stores/create")}
+              >
+                Create Store
+              </button>
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded"
+                onClick={() => navigate("/admin/stores")}
+              >
+                View Store List
+              </button>
+            </div>
             <div className="flex gap-4">
               <Link
                 to="/admin/stores"

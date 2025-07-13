@@ -17,11 +17,14 @@ export default function UserDetails() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        if (!response.ok) throw new Error("Failed to fetch user");
+        if (!response.ok) {
+          const errMsg = await response.text();
+          throw new Error(errMsg || "Failed to fetch user");
+        }
         const data = await response.json();
         setUser(data);
       } catch (err) {
-        setError("Error loading user details");
+        setError("Error loading user details: " + err.message);
       }
     }
     fetchUser();
