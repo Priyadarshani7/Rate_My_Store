@@ -1,4 +1,5 @@
-import { useAuth } from '../../context/AuthContext';
+import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -12,7 +13,9 @@ export default function AdminDashboard() {
               <h1 className="text-xl font-semibold">Admin Dashboard</h1>
             </div>
             <div className="flex items-center">
-              <span className="text-gray-700 mr-4">Welcome, {user.firstName}</span>
+              <span className="text-gray-700 mr-4">
+                Welcome, {user.firstName}
+              </span>
               <button
                 onClick={logout}
                 className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
@@ -29,11 +32,18 @@ export default function AdminDashboard() {
           <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 p-4">
             <h2 className="text-2xl font-bold mb-4">Admin Controls</h2>
             <p className="text-gray-600">
-              This is a protected admin area. Only users with admin privileges can access this page.
+              This is a protected admin area. Only users with admin privileges
+              can access this page.
             </p>
+            <Link
+              to="/admin/stores"
+              className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700"
+            >
+              Manage Stores
+            </Link>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}
