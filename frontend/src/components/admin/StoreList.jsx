@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function StoreList() {
   const { token } = useAuth();
@@ -34,6 +34,7 @@ export default function StoreList() {
             <div className="font-semibold">{store.name}</div>
             <div>{store.email}</div>
             <div>{store.address}</div>
+            <div>Average Rating: {store.average_rating}</div>
           </li>
         ))}
       </ul>

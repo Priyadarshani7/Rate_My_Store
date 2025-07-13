@@ -1,23 +1,24 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    address: "", // Added address field to formData
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { signup } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -25,9 +26,9 @@ export default function Signup() {
     e.preventDefault();
     try {
       await signup(formData);
-      navigate('/login');
+      navigate("/login");
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError("Registration failed. Please try again.");
     }
   };
 
@@ -108,6 +109,21 @@ export default function Signup() {
                 onChange={handleChange}
               />
             </div>
+            <div>
+              <label htmlFor="address" className="sr-only">
+                Address
+              </label>
+              <input
+                id="address"
+                name="address"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Address"
+                value={formData.address}
+                onChange={handleChange}
+              />
+            </div>
           </div>
 
           <div>
@@ -122,4 +138,4 @@ export default function Signup() {
       </div>
     </div>
   );
-} 
+}

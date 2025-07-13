@@ -11,10 +11,19 @@ class Store {
     return result.rows[0];
   }
 
-  static async findAll() {
-    const result = await db.query(
-      `SELECT id, name, email, address, created_at FROM stores`
-    );
+  static async findAll(query, params) {
+    if (query && params) {
+      const result = await db.query(query, params);
+      return result.rows;
+    }
+    const result = await db.query(`
+      SELECT s.id, s.name, s.email, s.address, s.created_at,
+        COALESCE(AVG(r.rating), 0) AS average_rating
+      FROM stores s
+      LEFT JOIN ratings r ON s.id = r.store_id
+      GROUP BY s.id
+      ORDER BY s.name
+    `);
     return result.rows;
   }
 }
