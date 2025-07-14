@@ -27,28 +27,28 @@ export default function StoreList() {
   }, [token]);
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded shadow">
+    <div className="max-w-7xl mx-auto mt-8 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Stores List</h2>
       {error && <div className="text-red-600">{error}</div>}
-      <ul>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {stores.map((store) => (
-          <li key={store.id} className="mb-4 border-b pb-2">
-            <div className="font-semibold">{store.name}</div>
-            <div>{store.email}</div>
-            <div>{store.address}</div>
-            <div>Average Rating: {store.average_rating}</div>
-          </li>
+          <div
+            key={store.id}
+            className="bg-gray-50 rounded-lg shadow p-4 flex flex-col"
+          >
+            <div className="font-semibold text-lg mb-2">{store.name}</div>
+            <div className="text-sm text-gray-700 font-medium  mb-1">
+              Contact Store: {store.email}
+            </div>
+            <div className="text-sm text-gray-700 font-medium  mb-1">
+              Store Address: {store.address}
+            </div>
+            <div className="text-sm text-gray-900 font-medium mt-auto">
+              Average Rating: {store.average_rating}
+            </div>
+          </div>
         ))}
-      </ul>
-      <button
-        onClick={() => {
-          logout();
-          navigate("/login");
-        }}
-        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
-      >
-        Logout
-      </button>
+      </div>
     </div>
   );
 }

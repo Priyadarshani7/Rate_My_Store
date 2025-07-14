@@ -17,7 +17,7 @@ export default function Login() {
       if (response.user.role === 'system_administrator') {
         navigate('/admin');
       } else if (response.user.role === 'store_owner') {
-        navigate('/store/dashboard');
+        navigate('/store');
       } else {
         navigate('/dashboard');
       }
@@ -93,4 +93,4 @@ export default function Login() {
       </div>
     </div>
   );
-}
+} 

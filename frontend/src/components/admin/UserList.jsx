@@ -13,6 +13,7 @@ export default function UserList() {
     address: "",
     role: "",
   });
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -84,32 +85,73 @@ export default function UserList() {
         </select>
       </div>
       {error && <div className="text-red-600">{error}</div>}
-      <table className="w-full border">
+      <table className="w-full border border-gray-400 rounded-lg overflow-hidden">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2">Name</th>
-            <th className="p-2">Email</th>
-            <th className="p-2">Address</th>
-            <th className="p-2">Role</th>
-            <th className="p-2">Actions</th>
+          <tr className="bg-gray-100 border-b border-gray-400">
+            <th className="p-2 text-left border-r border-gray-400">Name</th>
+            <th className="p-2 text-left border-r border-gray-400">Email</th>
+            <th className="p-2 text-left border-r border-gray-400">Address</th>
+            <th className="p-2 text-left border-r border-gray-400">Role</th>
+            <th className="p-2 text-center">Details</th>
           </tr>
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.id} className="border-t">
-              <td className="p-2">
-                {u.first_name} {u.last_name}
+            <tr
+              key={u.id}
+              className="hover:bg-gray-50 border-b border-gray-400"
+            >
+              <td className="p-2 border-r border-gray-400">
+                <div className="flex flex-col">
+                  <span>
+                    {u.first_name} {u.last_name}
+                  </span>
+                </div>
               </td>
-              <td className="p-2">{u.email}</td>
-              <td className="p-2">{u.address}</td>
-              <td className="p-2">{u.role}</td>
-              <td className="p-2">
-                <Link
-                  to={`/admin/users/${u.id}`}
-                  className="text-indigo-600 hover:underline"
+              <td className="p-2 border-r border-gray-400">
+                <div className="flex flex-col">
+                  <span>{u.email}</span>
+                </div>
+              </td>
+              <td className="p-2 border-r border-gray-400">
+                <div className="flex flex-col">
+                  <span>{u.address}</span>
+                </div>
+              </td>
+              <td className="p-2 border-r border-gray-400">
+                <div className="flex flex-col">
+                  <span>{u.role}</span>
+                </div>
+              </td>
+              <td className="p-2 text-center">
+                <button
+                  className="text-indigo-600 hover:text-indigo-900"
+                  title="View Details"
+                  onClick={() => setSelectedUser(u)}
                 >
-                  Details
-                </Link>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="inline h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      fill="none"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 16v-4m0-4h.01"
+                    />
+                  </svg>
+                </button>
               </td>
             </tr>
           ))}
@@ -121,15 +163,40 @@ export default function UserList() {
       >
         Add User
       </Link>
-      <button
-        onClick={() => {
-          logout();
-          navigate("/login");
-        }}
-        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
-      >
-        Logout
-      </button>
+
+      {/* User details modal */}
+      {selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setSelectedUser(null)}
+              title="Close"
+            >
+              &times;
+            </button>
+            <h3 className="text-lg font-bold mb-4">User Details</h3>
+            <div className="mb-2">
+              <strong>Name:</strong> {selectedUser.first_name}{" "}
+              {selectedUser.last_name}
+            </div>
+            <div className="mb-2">
+              <strong>Email:</strong> {selectedUser.email}
+            </div>
+            <div className="mb-2">
+              <strong>Address:</strong> {selectedUser.address}
+            </div>
+            <div className="mb-2">
+              <strong>Role:</strong> {selectedUser.role}
+            </div>
+            {selectedUser.role === "store_owner" && (
+              <div className="mb-2">
+                <strong>Average Rating:</strong> {selectedUser.average_rating}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
