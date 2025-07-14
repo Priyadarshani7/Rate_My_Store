@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -14,15 +14,18 @@ export default function Login() {
     try {
       const response = await login(email, password);
       // Redirect based on user role
-      if (response.user.role === 'system_administrator') {
-        navigate('/admin');
-      } else if (response.user.role === 'store_owner') {
-        navigate('/store');
+      if (response.user.role === "system_administrator") {
+        navigate("/admin");
+      } else if (response.user.role === "store_owner") {
+        navigate("/store/dashboard");
+      } else if (response.user.role === "normal_user") {
+        navigate("/dashboard");
       } else {
-        navigate('/dashboard');
+        // fallback for unknown role
+        navigate("/login");
       }
     } catch (err) {
-      setError('Invalid login credentials');
+      setError("Invalid login credentials");
     }
   };
 
@@ -34,8 +37,11 @@ export default function Login() {
             Sign in to your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+            Or{" "}
+            <Link
+              to="/signup"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
               create a new account
             </Link>
           </p>
@@ -93,4 +99,4 @@ export default function Login() {
       </div>
     </div>
   );
-} 
+}

@@ -64,15 +64,6 @@ export default function StoreOwnerUpdatePassword() {
         {error && <div className="text-red-600">{error}</div>}
         {success && <div className="text-green-600">{success}</div>}
       </form>
-      <button
-        onClick={() => {
-          logout();
-          navigate("/login");
-        }}
-        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
-      >
-        Logout
-      </button>
     </div>
   );
 }

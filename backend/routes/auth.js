@@ -62,4 +62,36 @@ router.get("/store_owner", auth, checkRole(["store_owner"]), (req, res) => {
   res.json({ message: "Welcome store owner!" });
 });
 
+// Update password route
+router.post("/update-password", auth, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ error: "Missing password fields" });
+    }
+    // Fetch user
+    const userResult = await require("../models/user").findByEmail(
+      req.user.email
+    );
+    if (!userResult) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const bcrypt = require("bcryptjs");
+    const match = await bcrypt.compare(oldPassword, userResult.password_hash);
+    if (!match) {
+      return res.status(400).json({ error: "Old password is incorrect" });
+    }
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await require("../config/database").query(
+      "UPDATE users SET password_hash = $1 WHERE id = $2",
+      [newHash, userId]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error updating password:", err);
+    res.status(500).json({ error: "Failed to update password" });
+  }
+});
+
 module.exports = router;

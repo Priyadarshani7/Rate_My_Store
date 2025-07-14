@@ -46,6 +46,7 @@ export default function CreateStore() {
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Add New Store</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {success && <div className="text-green-600">{success}</div>}
         <input
           name="name"
           value={formData.name}
@@ -76,8 +77,6 @@ export default function CreateStore() {
         >
           Create Store
         </button>
-        {error && <div className="text-red-600">{error}</div>}
-        {success && <div className="text-green-600">{success}</div>}
       </form>
     </div>
   );

@@ -15,8 +15,9 @@ export default function UpdatePassword() {
     setError("");
     setSuccess("");
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/auth/update-password",
+      // Try user route first, fallback to auth route if needed
+      let response = await fetch(
+        "http://localhost:3000/api/user/update-password",
         {
           method: "POST",
           headers: {
@@ -26,6 +27,20 @@ export default function UpdatePassword() {
           body: JSON.stringify({ oldPassword, newPassword }),
         }
       );
+      if (!response.ok) {
+        // fallback to auth route for compatibility
+        response = await fetch(
+          "http://localhost:3000/api/auth/update-password",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ oldPassword, newPassword }),
+          }
+        );
+      }
       if (!response.ok) throw new Error("Failed to update password");
       setSuccess("Password updated successfully!");
       setOldPassword("");
@@ -64,15 +79,6 @@ export default function UpdatePassword() {
         {error && <div className="text-red-600">{error}</div>}
         {success && <div className="text-green-600">{success}</div>}
       </form>
-      <button
-        onClick={() => {
-          logout();
-          navigate("/login");
-        }}
-        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
-      >
-        Logout
-      </button>
     </div>
   );
 }

@@ -11,7 +11,7 @@ export default function StoreList() {
   useEffect(() => {
     async function fetchStores() {
       try {
-        const response = await fetch("http://localhost:3000/api/stores", {
+        const response = await fetch("http://localhost:3000/api/admin/stores", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

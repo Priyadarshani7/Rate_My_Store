@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../config/database");
-const { auth, checkRole } = require("../middlewares/auth");
-const Store = require("../models/store");
+const db = require("../../config/database");
+const { auth, checkRole } = require("../../middlewares/auth");
+const Store = require("../../models/store");
 
 // Only admin can access these stats
 router.get(
@@ -101,7 +101,23 @@ router.post(
   async (req, res) => {
     try {
       const { firstName, lastName, email, password, address, role } = req.body;
-      const user = await require("../models/user").create({
+      // Validate required fields
+      if (!firstName || !lastName || !email || !password || !address || !role) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+      // Validate role
+      const validRoles = ["normal_user", "system_administrator", "store_owner"];
+      if (!validRoles.includes(role)) {
+        return res.status(400).json({ error: "Invalid role" });
+      }
+      // Check for duplicate email
+      const existing = await db.query("SELECT id FROM users WHERE email = $1", [
+        email,
+      ]);
+      if (existing.rows.length > 0) {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+      const user = await require("../../models/user").create({
         firstName,
         lastName,
         email,
@@ -111,6 +127,7 @@ router.post(
       });
       res.status(201).json(user);
     } catch (error) {
+      console.error("Error creating user:", error); // Add error log
       res.status(400).json({ error: "User creation failed" });
     }
   }

@@ -43,11 +43,12 @@ export default function Signup() {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
+          {/* Remove error message from UI */}
+          {/* {error && (
             <div className="rounded-md bg-red-50 p-4">
               <div className="text-sm text-red-700">{error}</div>
             </div>
-          )}
+          )} */}
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="first-name" className="sr-only">
